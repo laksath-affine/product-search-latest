@@ -48,37 +48,37 @@ with st.spinner("Wait....Checking/loading all the resources.."):
 
 images = [
     {
-        'path': 'images\\Del Monte Fresh Cut Corn Cream Style Golden Sweet - 14.75 Oz\\Del Monte Fresh Cut Corn Cream Style Golden Sweet - 14.75 Oz_1.jpeg',
+        'path': 'images/Del Monte Fresh Cut Corn Cream Style Golden Sweet - 14.75 Oz/Del Monte Fresh Cut Corn Cream Style Golden Sweet - 14.75 Oz_1.jpeg',
         'action_name': 'action_name1',
         'metadata': {'category': 'canned products', 'brand': 'del monte', 'flavour': 'Cut Corn Cream Style Golden Sweet', 'quantity': '14.5'}
     },
     {
-        'path': 'images\\Halo Top Chocolate chip cookie dough ice cream\\Halo Top Chocolate chip cookie dough ice cream_1.png',
+        'path': 'images/Halo Top Chocolate chip cookie dough ice cream/Halo Top Chocolate chip cookie dough ice cream_1.png',
         'action_name': 'action_name2',
         'metadata': {'category': 'Frozen Foods', 'brand': 'halo top', 'flavour': 'Chocolate chip cookie dough', 'quantity': '16'}
     },
     {
-        'path': 'images\\Juanitas Foods Mexican Gourmet Sauce Nacho Cheese Can - 15 Oz\\Juanitas Foods Mexican Gourmet Sauce Nacho Cheese Can - 15 Oz_5.jpeg',
+        'path': 'images/Juanitas Foods Mexican Gourmet Sauce Nacho Cheese Can - 15 Oz/Juanitas Foods Mexican Gourmet Sauce Nacho Cheese Can - 15 Oz_5.jpeg',
         'action_name': 'action_name3',
         'metadata': {'category': 'canned products', 'brand': 'juanitas foods', 'flavour': 'Mexican Gourmet Sauce Nacho Cheese', 'quantity': '15'}
     },
     {
-        'path': 'images\\Pepsi Soda Cola - 20 Fl. Oz\\Pepsi Soda Cola - 20 Fl. Oz._1.jpeg',
+        'path': 'images/Pepsi Soda Cola - 20 Fl. Oz/Pepsi Soda Cola - 20 Fl. Oz._1.jpeg',
         'action_name': 'action_name4',
         'metadata': {'category': 'Beverages', 'brand': 'pepsi', 'flavour': 'Soda Cola', 'quantity': '20'}
     },
     {
-        'path': 'images\\So Delicious Vanilla Bean\\So Delicious Vanilla Bean_1.png',
+        'path': 'images/So Delicious Vanilla Bean/So Delicious Vanilla Bean_1.png',
         'action_name': 'action_name5',
         'metadata': {'category': 'Frozen Foods', 'brand': 'so delicious', 'flavour': 'Vanilla', 'quantity': '16'}
     },
     {
-        'path': 'images\\Soleil Water Sparkling Blood Orange 24-12 Fz - 24-12 FZ\\Soleil Water Sparkling Blood Orange 24-12 Fz - 24-12 FZ_1.jpeg',
+        'path': 'images/Soleil Water Sparkling Blood Orange 24-12 Fz - 24-12 FZ/Soleil Water Sparkling Blood Orange 24-12 Fz - 24-12 FZ_1.jpeg',
         'action_name': 'action_name6',
         'metadata': {'category': 'Beverages', 'brand': 'soleil', 'flavour': 'Sparkling Blood Orange', 'quantity': '24'}
     },
     {
-        'path': 'images\\Zapps 2.625 Oz S&V Chip - 2.62 Oz\\Zapps 2.625 Oz S&V Chip - 2.62 Oz.webp',
+        'path': 'images/Zapps 2.625 Oz S&V Chip - 2.62 Oz/Zapps 2.625 Oz S&V Chip - 2.62 Oz.webp',
         'action_name': 'action_name7',
         'metadata': {'category': 'Cookies, Snacks & Candy', 'brand': 'lays', 'flavour': 'Sea Salt', 'quantity': '2.62'}
     }
@@ -200,6 +200,5 @@ else:
         # Process 3 images at a time
         for idx, image_path in enumerate(images[i:i+3]):
             with cols[idx]:  # Access the corresponding column
-                clickable_image(images[idx+i]["path"],
-                                f"?action={images[idx+i]['action_name']}")
+                clickable_image(images[idx+i]["path"], f"?action={images[idx+i]['action_name']}")
                 st.write(" ")
