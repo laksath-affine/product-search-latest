@@ -104,15 +104,15 @@ def generate_top_10_search_results(items, flavour, quantity):
     item_list = ''
     for i, item in enumerate(items, start=1):
         item_list += f'ITEM {i}: {item.strip()}\n\n'
-
+    count = len(items)
     prompt = (
         f"You are a highly skilled food suggestion expert. From the given input's metadata: Flavour: {flavour} ; Quantity: {quantity} Oz,"
-        "Idenify and return the top 100 ranked (best to worst) most relevant item numbers. The output should strictly follow this format: [item_number1, item_number2, ...]. "
-        "If there are fewer than 100 relevant items, return as many as are available in the correct format but try to return 100 unless you find results to be completely irrelevant. "
-        "Give the first preference to the similar looking flavour followed by the quantity."
-        "Even if you find some exact matches, then you can still look for other items that could potentially be similar based on the description of the item."
-        "For example, if the relevant items are Item No 1, Item No 3, Item No 6, Item No 12, and Item No 22, the output should be [1, 3, 6, 12, 22]. "
-        "Do not include any additional information or text.\nItems:\n"
+        f"Idenify and return the top {count} ranked (best to worst) most relevant item numbers. The output should strictly follow this format: [item_number1, item_number2, ...]. "
+        f"If there are fewer than {count} relevant items, return as many as are available in the correct format but try to return {count} unless you find results to be completely irrelevant. "
+        f"Give the first preference to the similar looking flavour followed by the quantity."
+        f"Even if you find some exact matches, then you can still look for other items that could potentially be similar based on the description of the item."
+        f"For example, if the relevant items are Item No 1, Item No 3, Item No 6, Item No 12, and Item No 22, the output should be [1, 3, 6, 12, 22]. "
+        f"Do not include any additional information or text.\nItems:\n"
         f"{item_list}"
     )
 
