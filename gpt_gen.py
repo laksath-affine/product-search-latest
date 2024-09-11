@@ -100,7 +100,7 @@ def generate_filtered_search_results(items, instruction):
     return get_text_api_result(prompt)
 
 
-def generate_top_10_search_results(items, flavour, quantity):
+def generate_top_n_search_results(items, flavour, quantity):
     item_list = ''
     for i, item in enumerate(items, start=1):
         item_list += f'ITEM {i}: {item.strip()}\n\n'
@@ -115,26 +115,5 @@ def generate_top_10_search_results(items, flavour, quantity):
         f"Do not include any additional information or text.\nItems:\n"
         f"{item_list}"
     )
-
     return get_text_api_result(prompt)
 
-
-def generate_top_10_search_results1(items, product_flavour_list, product_quantity_list, selected_image_flavour, selected_image_quantity):
-    item_list = ''
-    # Iterate over the three lists simultaneously and get the index with enumerate
-    for i, (item, flavour, quantity) in enumerate(zip(items, product_flavour_list, product_quantity_list)):
-        # for i, item in enumerate(items, start=1):
-        item_list += f'ITEM {i}: (flavour:{flavour},quantity:{quantity}) {item.strip()}\n\n'
-
-    prompt = (
-        f"You are a highly skilled food suggestion expert."
-        "Based on the below given selected_image_flavour and selected_image_quantity sort and return the top 10 most relevant item numbers. The output should strictly follow this format: [item_number1, item_number2, ...]. "
-        "If there are fewer than 10 relevant items, return as many as are available in the correct format. "
-        "For example, if the relevant items are Item No 1, Item No 3, Item No 6, Item No 12, and Item No 22, the output should be [1, 3, 6, 12, 22]. "
-        "Do not include any additional information or text.\nItems:\n"
-        f"selected_image_flavour: {selected_image_flavour}"
-        f"selected_image_quantity: {selected_image_quantity}"
-        f"{item_list}"
-    )
-
-    return get_text_api_result(prompt)

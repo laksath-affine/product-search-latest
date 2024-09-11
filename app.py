@@ -7,7 +7,7 @@ import math
 from collections import Counter
 from utils import similarity_search_via_image, create_search_index_in_azure_ai_search
 from azure_blob_storage import create_container_if_not_exists, parse_blob_url, list_blob_sas_urls_from_folder
-from gpt_gen import generate_top_10_search_results
+from gpt_gen import generate_top_n_search_results
 from vars import BLOB_CONNECTION_STRING, CONTAINER_NAME
 
 # Extract the storage account name from the connection string
@@ -129,14 +129,13 @@ def on_click(selected_image_path):
     ]
 
     while True:
-        for i in range(8):
+        for i in range(4):
             try:
-                second_filter_items = generate_top_10_search_results(product_description_list, product_info['flavour'], product_info['quantity'])
+                second_filter_items = generate_top_n_search_results(product_description_list, product_info['flavour'], product_info['quantity'])
                 integer_list = list(map(lambda x: int(x) - 1, second_filter_items.strip("[]").split(", ")))
                 
                 repeated_items = {item: count for item, count in Counter(integer_list).items() if count > 1}
-                print(len(integer_list))
-                print(len(set(integer_list)))
+                print(second_filter_items, len(integer_list), len(set(integer_list)))
                 print(repeated_items)
 
                 if len(integer_list) == len(set(integer_list)) and len(integer_list) > len(product_description_list)//2-2:
