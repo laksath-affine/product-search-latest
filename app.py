@@ -128,23 +128,28 @@ def on_click(selected_image_path):
         f"Product Description: {result['product_description']}\nFlavour: {result['flavour']}\n Quantity: {result['quantity']}" for result in relevant_context
     ]
 
-    for i in range(5):
-        try:
-            second_filter_items = generate_top_10_search_results(product_description_list, product_info['flavour'], product_info['quantity'])
-            integer_list = list(map(lambda x: int(x) - 1, second_filter_items.strip("[]").split(", ")))
-            
-            repeated_items = {item: count for item, count in Counter(integer_list).items() if count > 1}
-            print(len(integer_list))
-            print(len(set(integer_list)))
-            print(repeated_items)
+    while True:
+        for i in range(8):
+            try:
+                second_filter_items = generate_top_10_search_results(product_description_list, product_info['flavour'], product_info['quantity'])
+                integer_list = list(map(lambda x: int(x) - 1, second_filter_items.strip("[]").split(", ")))
+                
+                repeated_items = {item: count for item, count in Counter(integer_list).items() if count > 1}
+                print(len(integer_list))
+                print(len(set(integer_list)))
+                print(repeated_items)
 
-            if len(integer_list) == len(set(integer_list)) and len(integer_list) > len(product_description_list)//2-2:
-                break
+                if len(integer_list) == len(set(integer_list)) and len(integer_list) > len(product_description_list)//2-2:
+                    break
+            except:
+                pass
+        
+        try:
+            second_filter_relevant_context = [relevant_context[item_no] for item_no in integer_list]
+            break
         except:
             pass
-     
-    second_filter_relevant_context = [relevant_context[item_no] for item_no in integer_list]
-
+    
     st.markdown(f"## **{'Output'}**", unsafe_allow_html=True)
     display_images(second_filter_relevant_context)
 
