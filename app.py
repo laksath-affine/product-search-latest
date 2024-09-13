@@ -18,8 +18,7 @@ container_client = create_container_if_not_exists(
 
 
 # Streamlit app
-st.set_page_config(layout="wide")
-# st.set_page_config(layout="centered")
+st.set_page_config(layout="wide") # st.set_page_config(layout="centered")
 st.markdown("""
     <div style='text-align: center; margin-top:-70px; margin-bottom: 5px;margin-left: -10px;'>
     <h2 style='font-size: 40px; font-family: Courier New, monospace;
@@ -44,7 +43,7 @@ with st.spinner("Wait....Checking/loading all the resources.."):
     if not container_client.exists():
         # If the container doesn't exist, create it
         container_client.create_container()
-        print(f"Container '{CONTAINER_NAME}' created.")
+        print(f"Container {CONTAINER_NAME}")
 
 images = [
     {
@@ -58,9 +57,9 @@ images = [
         'metadata': {'category': 'Frozen Foods', 'brand': 'halo top', 'flavour': 'Chocolate chip cookie dough', 'quantity': '16'}
     },
     {
-        'path': 'images/Juanitas Foods Mexican Gourmet Sauce Nacho Cheese Can - 15 Oz/Juanitas Foods Mexican Gourmet Sauce Nacho Cheese Can - 15 Oz_5.jpeg',
+        'path': 'images/So Delicious Vanilla Bean/So Delicious Vanilla Bean_1.png',
         'action_name': 'action_name3',
-        'metadata': {'category': 'canned products', 'brand': 'juanitas foods', 'flavour': 'Mexican Gourmet Sauce Nacho Cheese', 'quantity': '15'}
+        'metadata': {'category': 'Frozen Foods', 'brand': 'so delicious', 'flavour': 'Vanilla', 'quantity': '16'}
     },
     {
         'path': 'images/Pepsi Soda Cola - 20 Fl. Oz/Pepsi Soda Cola - 20 Fl. Oz._1.jpeg',
@@ -68,9 +67,9 @@ images = [
         'metadata': {'category': 'Beverages', 'brand': 'pepsi', 'flavour': 'Soda Cola', 'quantity': '20'}
     },
     {
-        'path': 'images/So Delicious Vanilla Bean/So Delicious Vanilla Bean_1.png',
+        'path': 'images/Coca-Cola Soda Pop Classic - 12-12 Fl. Oz/Coca-Cola Soda Pop Classic - 12-12 Fl. Oz_1.jpeg',
         'action_name': 'action_name5',
-        'metadata': {'category': 'Frozen Foods', 'brand': 'so delicious', 'flavour': 'Vanilla', 'quantity': '16'}
+        'metadata': {'category': 'Beverages', 'brand': 'coca-cola', 'flavour': 'Soda Pop Classic', 'quantity': '144'}
     },
     {
         'path': 'images/Soleil Water Sparkling Blood Orange 24-12 Fz - 24-12 FZ/Soleil Water Sparkling Blood Orange 24-12 Fz - 24-12 FZ_1.jpeg',
@@ -78,10 +77,30 @@ images = [
         'metadata': {'category': 'Beverages', 'brand': 'soleil', 'flavour': 'Sparkling Blood Orange', 'quantity': '24'}
     },
     {
-        'path': 'images/Zapps 2.625 Oz S&V Chip - 2.62 Oz/Zapps 2.625 Oz S&V Chip - 2.62 Oz.webp',
+        'path': 'images/Zapps 2.625 Oz S&V Chip - 2.62 Oz/Zapps 2.625 Oz S&V Chip - 2.62 Oz.jpg',
         'action_name': 'action_name7',
         'metadata': {'category': 'Cookies, Snacks & Candy', 'brand': 'lays', 'flavour': 'Sea Salt', 'quantity': '2.62'}
-    }
+    },
+    {
+        'path': 'images/Lays Dip French Onion - 15 Oz/Lays Dip French Onion - 15 Oz_1.jpeg',
+        'action_name': 'action_name8',
+        'metadata': {'category': 'Cookies, Snacks & Candy', 'brand': 'lays', 'flavour': 'Dip Fresh onion', 'quantity': '15'}
+    },
+    {
+        'path': 'images/Lays Kettle Cooked All Dressed 8oz - 8 OZ/Lays Kettle Cooked All Dressed 8oz - 8 OZ_1.jpg',
+        'action_name': 'action_name9',
+        'metadata': {'category': 'Cookies, Snacks & Candy', 'brand': 'lays', 'flavour': 'Kettle Cooked All Dressed', 'quantity': '8'}
+    },
+    # {
+    #     'path': 'images/Lays Cheetos Potato Chips Cheese Flavored - 2.625 OZ/Lays Cheetos Potato Chips Cheese Flavored - 2.625 OZ_1.jpg',
+    #     'action_name': 'action_name10',
+    #     'metadata': {'category': 'Cookies, Snacks & Candy', 'brand': 'lays', 'flavour': 'Cheese', 'quantity': '2.625'}
+    # },
+    # {
+    #     'path': 'images/Juanitas Foods Mexican Gourmet Sauce Nacho Cheese Can - 15 Oz/Juanitas Foods Mexican Gourmet Sauce Nacho Cheese Can - 15 Oz_5.jpeg',
+    #     'action_name': 'action_name11',
+    #     'metadata': {'category': 'canned products', 'brand': 'juanitas foods', 'flavour': 'Mexican Gourmet Sauce Nacho Cheese', 'quantity': '15'}
+    # }
 ]
 
 
@@ -116,44 +135,37 @@ def display_images(relevant_context):
                 st.markdown(caption, unsafe_allow_html=True)
             j += 1
 
+
 def on_click(selected_image_path):
-    image = Image.open(selected_image_path)
-    image_name = 'input_image.png'
-    image.save(image_name)
-    
     product_info = mapped_data[selected_image_path]
-    relevant_context = similarity_search_via_image(image_name, product_info['category'], product_info['brand'])
+    # print(product_info)
+    relevant_context = similarity_search_via_image(selected_image_path, product_info['category'], product_info['brand'])
+    # print(relevant_context)
     
     product_description_list = [
-        f"Product Description: {result['product_description']}\nFlavour: {result['flavour']}\n Quantity: {result['quantity']}" for result in relevant_context
+        f"Product Description: {result['product_description']}\n\nFlavour: {result['flavour']}\n Quantity: {result['quantity']}" for result in relevant_context
     ]
 
-    while True:
-        for i in range(4):
-            try:
-                second_filter_items = generate_top_n_search_results(product_description_list, product_info['flavour'], product_info['quantity'])
-                integer_list = list(map(lambda x: int(x) - 1, second_filter_items.strip("[]").split(", ")))
-                
-                repeated_items = {item: count for item, count in Counter(integer_list).items() if count > 1}
-                print(second_filter_items, len(integer_list), len(set(integer_list)))
-                print(repeated_items)
+    # print(product_description_list)
 
-                if len(integer_list) == len(set(integer_list)) and len(integer_list) > len(product_description_list)//2-2:
-                    break
-            except:
-                pass
-        
+    for i in range(4):
         try:
+            second_filter_items = generate_top_n_search_results(product_description_list, selected_image_path)
+            integer_list = list(map(lambda x: int(x) - 1, second_filter_items.strip("[]").split(", ")))
+            
+            repeated_items = {item: count for item, count in Counter(integer_list).items() if count > 1}
+            print(second_filter_items, len(integer_list), len(set(integer_list)))
+            print(repeated_items)
+
+            # if len(integer_list) == len(set(integer_list)) and len(integer_list) > len(product_description_list)//2-2:
             second_filter_relevant_context = [relevant_context[item_no] for item_no in integer_list]
+            
+            st.markdown(f"## **{'Output'}**", unsafe_allow_html=True)
+            display_images(second_filter_relevant_context)
             break
         except:
             pass
     
-    st.markdown(f"## **{'Output'}**", unsafe_allow_html=True)
-    display_images(second_filter_relevant_context)
-
-    os.remove(image_name)
-
 
 def clickable_image(image_path, action_name):
 

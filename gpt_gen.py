@@ -86,34 +86,45 @@ def generate_item_description(folder_path=None, b64s=None, image_paths=None):
     return get_text_api_result(prompt, b64s)
 
 
-def generate_filtered_search_results(items, instruction):
-    item_list = ''
-    for i, item in enumerate(items, start=1):
-        item_list += f'ITEM {i}: {item.strip()}\n\n'
-    prompt = (
-        f"You are a highly skilled food suggestion expert. Based on the items provided and the user's request: '{instruction}', "
-        "identify and return only the relevant item numbers. The output should strictly follow this format: [item_number1, item_number2, ...]. "
-        "For example, if the relevant items are Item No 1, Item No 3, Item No 6, Item No 12, and Item No 22, the output should be [1, 3, 6, 12, 22]. "
-        "Do not include any additional information or text.\nItems:\n"
-        f"{item_list}"
-    )
-    return get_text_api_result(prompt)
+# def generate_filtered_search_results(items, instruction):
+#     item_list = ''
+#     for i, item in enumerate(items, start=1):
+#         item_list += f'ITEM {i}: {item.strip()}\n\n'
+#     prompt = (
+#         f"You are a highly skilled food suggestion expert. Based on the items provided and the user's request: '{instruction}', "
+#         "identify and return only the relevant item numbers. The output should strictly follow this format: [item_number1, item_number2, ...]. "
+#         "For example, if the relevant items are Item No 1, Item No 3, Item No 6, Item No 12, and Item No 22, the output should be [1, 3, 6, 12, 22]. "
+#         "Do not include any additional information or text.\nItems:\n"
+#         f"{item_list}"
+#     )
+#     return get_text_api_result(prompt)
 
 
-def generate_top_n_search_results(items, flavour, quantity):
+def generate_top_n_search_results(items, image_path):
     item_list = ''
     for i, item in enumerate(items, start=1):
         item_list += f'ITEM {i}: {item.strip()}\n\n'
     count = len(items)
+    
+    # prompt = (
+    #     f"You are a highly skilled food suggestion expert. From the given input's metadata: Flavour: {flavour} ; Quantity: {quantity} Oz,"
+    #     f"Idenify and return the top {count} ranked (best to worst) most relevant item numbers. The output should strictly follow this format: [item_number1, item_number2, ...]. "
+    #     f"If there are fewer than {count} relevant items, return as many as are available in the correct format but try to return {count} unless you find results to be completely irrelevant. "
+    #     f"Even if you find some exact matches, then you can still look for other items that could potentially be similar based on the description of the item."
+    #     f"For example, if the relevant items are Item No 1, Item No 3, Item No 6, Item No 12, and Item No 22, the output should be [1, 3, 6, 12, 22]. "
+    #     f"Do not include any additional information or text.\nItems:\n"
+    #     f"{item_list}"
+    # )
+    
     prompt = (
-        f"You are a highly skilled food suggestion expert. From the given input's metadata: Flavour: {flavour} ; Quantity: {quantity} Oz,"
-        f"Idenify and return the top {count} ranked (best to worst) most relevant item numbers. The output should strictly follow this format: [item_number1, item_number2, ...]. "
-        f"If there are fewer than {count} relevant items, return as many as are available in the correct format but try to return {count} unless you find results to be completely irrelevant. "
-        f"Give the first preference to the similar looking flavour followed by the quantity."
-        f"Even if you find some exact matches, then you can still look for other items that could potentially be similar based on the description of the item."
+        f"You are a highly skilled food suggestion expert. From the given input image,"
+        f"Identify and return the top {count} ranked (best to worst) most relevant item numbers that belong to the same category as the input item (e.g., chips, dips, etc.). The output should strictly follow this format: [item_number1, item_number2, ...]. "
+        f"Ensure that the results come from the same inferred category as the input and exclude items from any oher category. "
+        f"If there are fewer than {count} relevant items in the same category, return as many as are available in the correct format but do not include items from different categories even if fewer results are returned. "
         f"For example, if the relevant items are Item No 1, Item No 3, Item No 6, Item No 12, and Item No 22, the output should be [1, 3, 6, 12, 22]. "
         f"Do not include any additional information or text.\nItems:\n"
         f"{item_list}"
     )
-    return get_text_api_result(prompt)
+    
+    return get_text_api_result(prompt, [encode_image(image_path)])
 
