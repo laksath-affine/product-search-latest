@@ -1,5 +1,4 @@
 import streamlit as st
-from PIL import Image
 from utils import create_search_index_in_azure_ai_search
 from azure_blob_storage import create_container_if_not_exists
 from authentication import login, logout

@@ -60,19 +60,7 @@ def get_text_api_result(prompt, base64_images=None):
     return completion.choices[0].message.content
 
 
-tagging_prompt = """Analyze the provided images meticulously and extract detailed information based on the following categories:
-    Extract all text from the image, ensuring no details are missed. Pay special attention to any certifications, health claims, brand names, and nutritional information. 
-    Carefully include text from all sections, including the top, center, bottom, and sides of the packaging. 
-    Review the image thoroughly to capture any additional small text or logos that 
-    might be important, such as certifications or endorsements (e.g., American Heart Association, Gluten Free).
-    Provide the extracted text in a clear, organized format
-
-"""
-prompt = "Create a detailed product description with the information from these images. Ensure the text is unformatted, without any bold, italic, or other special formatting."
-
-
 def generate_item_description(folder_path=None, b64s=None, image_paths=None):
-    # prompt = "Analyze the provided set of images and generate a structured and detailed description that includes only the product's nutritional values, ingredients, serving sizes, packaging claims, allergen information, and other relevant details. Do not include any additional commentary, concluding statements, or extraneous text beyond the factual information presented in the images. Ensure the text is unformatted, without any bold, italic, or other special formatting."
     prompt = "Create a detailed product description with the information from these images. Ensure the text is unformatted, without any bold, italic, or other special formatting."
 
     if not b64s:
@@ -86,35 +74,11 @@ def generate_item_description(folder_path=None, b64s=None, image_paths=None):
     return get_text_api_result(prompt, b64s)
 
 
-# def generate_filtered_search_results(items, instruction):
-#     item_list = ''
-#     for i, item in enumerate(items, start=1):
-#         item_list += f'ITEM {i}: {item.strip()}\n\n'
-#     prompt = (
-#         f"You are a highly skilled food suggestion expert. Based on the items provided and the user's request: '{instruction}', "
-#         "identify and return only the relevant item numbers. The output should strictly follow this format: [item_number1, item_number2, ...]. "
-#         "For example, if the relevant items are Item No 1, Item No 3, Item No 6, Item No 12, and Item No 22, the output should be [1, 3, 6, 12, 22]. "
-#         "Do not include any additional information or text.\nItems:\n"
-#         f"{item_list}"
-#     )
-#     return get_text_api_result(prompt)
-
-
 def generate_top_n_search_results(items, image_path):
     item_list = ''
     for i, item in enumerate(items, start=1):
         item_list += f'ITEM {i}: {item.strip()}\n\n'
     count = len(items)
-    
-    # prompt = (
-    #     f"You are a highly skilled food suggestion expert. From the given input's metadata: Flavour: {flavour} ; Quantity: {quantity} Oz,"
-    #     f"Idenify and return the top {count} ranked (best to worst) most relevant item numbers. The output should strictly follow this format: [item_number1, item_number2, ...]. "
-    #     f"If there are fewer than {count} relevant items, return as many as are available in the correct format but try to return {count} unless you find results to be completely irrelevant. "
-    #     f"Even if you find some exact matches, then you can still look for other items that could potentially be similar based on the description of the item."
-    #     f"For example, if the relevant items are Item No 1, Item No 3, Item No 6, Item No 12, and Item No 22, the output should be [1, 3, 6, 12, 22]. "
-    #     f"Do not include any additional information or text.\nItems:\n"
-    #     f"{item_list}"
-    # )
     
     prompt = (
         f"You are a highly skilled food suggestion expert. From the given input image,"
@@ -127,4 +91,3 @@ def generate_top_n_search_results(items, image_path):
     )
     
     return get_text_api_result(prompt, [encode_image(image_path)])
-
