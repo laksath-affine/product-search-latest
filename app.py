@@ -1,67 +1,86 @@
 import streamlit as st
 from PIL import Image
-import math
-from collections import Counter
-from utils import similarity_search_via_image, create_search_index_in_azure_ai_search
-from azure_blob_storage import create_container_if_not_exists, parse_blob_url, list_blob_sas_urls_from_folder
-from gpt_gen import generate_top_n_search_results
+from utils import create_search_index_in_azure_ai_search
+from azure_blob_storage import create_container_if_not_exists
 from authentication import login, logout
-from helpers import clickable_image, handle_action, header_html
-from image_data import images, mapped_data
+from helpers import handle_action, header_html
+from image_data import images
 from vars import BLOB_CONNECTION_STRING, CONTAINER_NAME
 
-# Extract the storage account name from the connection string
-storage_account_name = BLOB_CONNECTION_STRING.split(";")[1].split("=")[1]
-create_search_index_in_azure_ai_search()
-container_client = create_container_if_not_exists(
-    connection_string= BLOB_CONNECTION_STRING, container_name = CONTAINER_NAME)
+# Initialize the Azure search index and container client
+def initialize_resources():
+    try:
+        create_search_index_in_azure_ai_search()
+        container_client = create_container_if_not_exists(
+            connection_string=BLOB_CONNECTION_STRING,
+            container_name=CONTAINER_NAME
+        )
+        return container_client
+    except Exception as e:
+        st.error(f"Error initializing resources: {e}")
+        return None
 
-
-# Streamlit app
-st.set_page_config(layout="wide") # st.set_page_config(layout="centered")
-st.write('')
-st.markdown(header_html, unsafe_allow_html=True)
-
-
-if 'login_status' not in st.session_state:
-    st.session_state['login_status'] = False
-
-if st.session_state['login_status']:
-
-    st.title('Find Variants')
-    with st.spinner("Wait....Checking/loading all the resources.."):
-        if not container_client.exists():
-            # If the container doesn't exist, create it
-            container_client.create_container()
-            print(f"Container {CONTAINER_NAME}")
-
-
+# Initialize session state variables
+def initialize_session_state():
+    if 'login_status' not in st.session_state:
+        st.session_state['login_status'] = False
     if 'selected_image_path' not in st.session_state:
-        st.session_state.selected_image_path = None
+        st.session_state['selected_image_path'] = None
+    if 'current_action' not in st.session_state:
+        st.session_state['current_action'] = None
 
+# Define callback functions
+def select_image(action_name):
+    st.session_state['current_action'] = action_name
 
-    selected_image_path = st.session_state.selected_image_path
+def go_back():
+    st.session_state['current_action'] = None
 
-    # Main Streamlit app
-    query_params = st.query_params
-    action = query_params.get("action", None)
+def main():
+    # Set up the page configuration and header
+    st.set_page_config(layout="wide")
+    st.markdown(header_html, unsafe_allow_html=True)
 
+    initialize_session_state()
 
-    # If an action is present in the query parameters, show only the clicked image and the corresponding action output
-    if action:
-        handle_action(action)
+    if st.session_state['login_status']:
+        st.title('Find Variants')
+
+        # Initialize resources
+        with st.spinner("Wait... Checking/loading all the resources..."):
+            container_client = initialize_resources()
+            if container_client is None:
+                st.stop()
+            if not container_client.exists():
+                container_client.create_container()
+
+        # Main application logic
+        action = st.session_state['current_action']
+
+        if action:
+            # Handle the selected action
+            handle_action(action)
+            st.button("Back", on_click=go_back)
+        else:
+            # Display images for selection
+            st.header("Select an Image")
+            num_columns = 3  # Number of images per row
+            image_rows = [images[i:i + num_columns] for i in range(0, len(images), num_columns)]
+            for row in image_rows:
+                cols = st.columns(num_columns)
+                for idx, image_data in enumerate(row):
+                    with cols[idx]:
+                        st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
+                        st.image(image_data["path"], width=250)
+                        st.button("Select", key=f"select_{image_data['action_name']}",
+                                  on_click=select_image, args=(image_data['action_name'],))
+                        st.markdown("</div>", unsafe_allow_html=True)
+        # Logout button
+        if st.button("Logout"):
+            logout()
     else:
-        st.header("Select an Image")
-        for i in range(0, len(images), 3):
-            cols = st.columns(3)  # Create 3 columns in a row
-            # Process 3 images at a time
-            for idx, image_path in enumerate(images[i:i+3]):
-                with cols[idx]:  # Access the corresponding column
-                    clickable_image(images[idx+i]["path"], f"?action={images[idx+i]['action_name']}")
-                    st.write(" ")
-    
-    # Logout button
-    if st.button("Logout"):
-        logout()
-else:
-    login()
+        # Display login screen
+        login()
+
+if __name__ == "__main__":
+    main()
