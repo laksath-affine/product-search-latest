@@ -38,6 +38,8 @@ def go_back():
 def main():
     # Set up the page configuration and header
     st.set_page_config(layout="wide")
+    st.write('')
+    st.write('')
     st.markdown(header_html, unsafe_allow_html=True)
 
     initialize_session_state()
