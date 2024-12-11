@@ -97,12 +97,12 @@ def similarity_search_via_image(file_path, category, brand):
     text_results = []
     try:
         image_embedding = vectorize_image_with_filepath(file_path, VISION_ENDPOINT, VISION_SUBSCRIPTION_KEY, VISION_VERSION)
-        print('1')
-        print(str(image_embedding)[:4])
+        # print('1')
+        # print(str(image_embedding)[:4])
         image_vector_query = VectorizedQuery(
             vector=image_embedding, k_nearest_neighbors=100, fields="product_description_vector")
-        print('2')
-        print(image_vector_query)
+        # print('2')
+        # print(image_vector_query)
         text_results = search_client.search(
             vector_queries=[image_vector_query],
             select=["product_folder_link",
@@ -120,14 +120,14 @@ def similarity_search_via_image(file_path, category, brand):
         print(e)
         pass
     
-    print('3')
-    print(text_results)
+    # print('3')
+    # print(text_results)
     
     l=[]
     try:
-        print(0)
+        # print(0)
         l = list(text_results)
-        print(l)
+        # print(l)
     except Exception as e:
         print('$$')
         print(e)

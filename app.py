@@ -39,9 +39,6 @@ def go_back():
 def main():
     # Set up the page configuration and header
     st.set_page_config(layout="wide")
-    st.session_state['memory'] = psutil.virtual_memory().percent
-    st.write(f"Memory Usage: {st.session_state['memory']}%")
-    
     st.write('')
     st.write('')
     st.markdown(header_html, unsafe_allow_html=True)
