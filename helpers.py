@@ -49,9 +49,9 @@ def display_images(relevant_context):
                 
 def on_click(selected_image_path):
     product_info = mapped_data[selected_image_path]
-    # print(product_info)
+    print(product_info)
     relevant_context = similarity_search_via_image(selected_image_path, product_info['category'], product_info['brand'])
-    # print(relevant_context)
+    print(relevant_context)
     
     product_description_list = [
         f"Product Description: {result['product_description']}\n\nFlavour: {result['flavour']}\n Quantity: {result['quantity']}" for result in relevant_context
