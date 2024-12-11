@@ -50,7 +50,9 @@ def display_images(relevant_context):
 def on_click(selected_image_path):
     product_info = mapped_data[selected_image_path]
     print(product_info)
+    print('#')
     relevant_context = similarity_search_via_image(selected_image_path, product_info['category'], product_info['brand'])
+    print('@')
     print(relevant_context)
     
     product_description_list = [
