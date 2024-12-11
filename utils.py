@@ -94,23 +94,34 @@ def create_search_index_in_azure_ai_search():
 
 def similarity_search_via_image(file_path, category, brand):
 
-    image_embedding = vectorize_image_with_filepath(file_path, VISION_ENDPOINT, VISION_SUBSCRIPTION_KEY, VISION_VERSION)
-    image_vector_query = VectorizedQuery(
-        vector=image_embedding, k_nearest_neighbors=100, fields="product_description_vector")
-
-    text_results = search_client.search(
-        vector_queries=[image_vector_query],
-        select=["product_folder_link",
-                "product_description",
-                "category",
-                "brand",
-                "flavour",
-                "quantity"],
-        filter=f"category eq '{category}' and brand eq '{brand}'",
-        query_type=QueryType.SEMANTIC, semantic_configuration_name='my-semantic-config', query_caption=QueryCaptionType.EXTRACTIVE, query_answer=QueryAnswerType.EXTRACTIVE,
-        top=100
-    )
-
+    text_results = []
+    try:
+        image_embedding = vectorize_image_with_filepath(file_path, VISION_ENDPOINT, VISION_SUBSCRIPTION_KEY, VISION_VERSION)
+        print('1')
+        print(str(image_embedding)[:4])
+        image_vector_query = VectorizedQuery(
+            vector=image_embedding, k_nearest_neighbors=100, fields="product_description_vector")
+        print('2')
+        print(image_vector_query)
+        text_results = search_client.search(
+            vector_queries=[image_vector_query],
+            select=["product_folder_link",
+                    "product_description",
+                    "category",
+                    "brand",
+                    "flavour",
+                    "quantity"],
+            filter=f"category eq '{category}' and brand eq '{brand}'",
+            query_type=QueryType.SEMANTIC, semantic_configuration_name='my-semantic-config', query_caption=QueryCaptionType.EXTRACTIVE, query_answer=QueryAnswerType.EXTRACTIVE,
+            top=100
+        )
+    except Exception as e:
+        print('$$')
+        print(e)
+        pass
+    
+    print('3')
+    print(text_results)
     return list(text_results)
 
 
