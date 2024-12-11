@@ -122,8 +122,16 @@ def similarity_search_via_image(file_path, category, brand):
     
     print('3')
     print(text_results)
-    l = list(text_results)
-    print(l)
+    
+    l=[]
+    try:
+        print(0)
+        l = list(text_results)
+        print(l)
+    except Exception as e:
+        print('$$')
+        print(e)
+    
     return l
 
 
