@@ -5,6 +5,7 @@ from authentication import login, logout
 from helpers import handle_action, header_html
 from image_data import images
 from vars import BLOB_CONNECTION_STRING, CONTAINER_NAME
+import psutil
 
 # Initialize the Azure search index and container client
 def initialize_resources():
@@ -37,6 +38,9 @@ def go_back():
 
 def main():
     # Set up the page configuration and header
+    memory = psutil.virtual_memory()
+    st.write(f"Memory Usage: {memory.percent}%")
+
     st.set_page_config(layout="wide")
     st.write('')
     st.write('')
