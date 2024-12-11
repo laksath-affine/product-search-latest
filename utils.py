@@ -122,7 +122,9 @@ def similarity_search_via_image(file_path, category, brand):
     
     print('3')
     print(text_results)
-    return list(text_results)
+    l = list(text_results)
+    print(l)
+    return l
 
 
 def get_images_and_json(folder_path):
