@@ -1,50 +1,50 @@
 import requests
 from gpt_gen import generate_item_description
 from vars import VISION_ENDPOINT, VISION_SUBSCRIPTION_KEY, VISION_VERSION
-
+import pathlib
 
 def vectorize_image_with_filepath(
-    image_filepath: str,
-    endpoint: str,
-    key: str,
-    version: str,
+        image_filepath: str,
+        endpoint: str,
+        key: str,
+        api_version: str = "2024-02-01",
+        model_version: str = "2023-04-15",
 ):
     """
-    Generates a vector embedding for a local image using Azure AI Vision 4.0
-    (Vectorize Image API).
+    Returns the embedding vector of a local image using Azure AI Vision
+    Multimodal Embeddings (GA).
 
-    :param image_filepath: The image filepath.
-    :param endpoint: The endpoint of the Azure AI Vision resource.
-    :param key: The access key of the Azure AI Vision resource.
-    :param version: The version of the API.
-    :return: The vector embedding of the image.
+    Parameters
+    ----------
+    image_filepath : str  Path to local image
+    endpoint       : str  e.g. 'https://myvision.cognitiveservices.azure.com/'
+    key            : str  subscription key
+    api_version    : str  default '2024-02-01'
+    model_version  : str  '2023-04-15' (multilingual) or '2022-04-11'
     """
     with open(image_filepath, "rb") as img:
         data = img.read()
 
-    # Vectorize Image API
-    version = f'?api-version={version}&modelVersion=latest'
-    vision_api = endpoint + "retrieval:vectorizeImage" + version
+    # Ensure single trailing slash
+    endpoint = endpoint.rstrip("/") + "/"
+
+    url = (
+        f"{endpoint}retrieval:vectorizeImage"
+        f"?api-version={api_version}&model-version={model_version}"
+    )
 
     headers = {
-        "Content-type": "application/octet-stream",
+        "Content-Type": "application/octet-stream",
         "Ocp-Apim-Subscription-Key": key,
     }
+    
+    image_path = pathlib.Path(image_filepath)
+    resp = requests.post(url, data=image_path.read_bytes(), headers=headers, timeout=30)
+    if resp.ok:
+        return resp.json()["vector"]
 
-    try:
-        r = requests.post(vision_api, data=data, headers=headers)
-        if r.status_code == 200:
-            image_vector = r.json()["vector"]
-            return image_vector
-        else:
-            print(
-                f"An error occurred while processing {image_filepath}. "
-                f"Error code: {r.status_code}."
-            )
-    except Exception as e:
-        print(f"An error occurred while processing {image_filepath}: {e}")
+    raise RuntimeError(f"{resp.status_code}: {resp.text}")
 
-    return None
 
 
 def vectorize_image_with_url(

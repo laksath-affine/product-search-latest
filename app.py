@@ -5,7 +5,6 @@ from authentication import login, logout
 from helpers import handle_action, header_html
 from image_data import images
 from vars import BLOB_CONNECTION_STRING, CONTAINER_NAME
-import psutil
 
 # Initialize the Azure search index and container client
 def initialize_resources():

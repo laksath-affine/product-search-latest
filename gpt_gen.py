@@ -4,6 +4,7 @@ import base64
 import requests
 from vars import AZURE_OPENAI_AI_VERSION, AZURE_OPENAI_API_KEY, AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_NAME
 
+
 def encode_image(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode('utf-8')
@@ -21,9 +22,9 @@ def url_to_base64(image_url):
 
 def get_text_api_result(prompt, base64_images=None):
     completion_client = AzureOpenAI(
-        azure_endpoint = AZURE_OPENAI_ENDPOINT,
-        api_key = AZURE_OPENAI_API_KEY,
-        api_version = AZURE_OPENAI_AI_VERSION
+        azure_endpoint=AZURE_OPENAI_ENDPOINT,
+        api_key=AZURE_OPENAI_API_KEY,
+        api_version=AZURE_OPENAI_AI_VERSION
     )
 
     if base64_images:

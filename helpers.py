@@ -65,7 +65,7 @@ def on_click(selected_image_path):
         try:
             second_filter_items = generate_top_n_search_results(product_description_list, selected_image_path)
             integer_list = list(map(lambda x: int(x) - 1, second_filter_items.strip("[]").split(", ")))
-            
+            print(integer_list)
             repeated_items = {item: count for item, count in Counter(integer_list).items() if count > 1}
             print(second_filter_items, len(integer_list), len(set(integer_list)))
             print(repeated_items)
@@ -76,7 +76,8 @@ def on_click(selected_image_path):
             st.markdown(f"## **{'Output'}**", unsafe_allow_html=True)
             display_images(second_filter_relevant_context)
             break
-        except:
+        except Exception as e:
+            print(f"Error in generating top N search results: {e}")
             pass
         
 def handle_action(action_name):

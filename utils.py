@@ -96,9 +96,10 @@ def similarity_search_via_image(file_path, category, brand):
 
     text_results = []
     try:
-        image_embedding = vectorize_image_with_filepath(file_path, VISION_ENDPOINT, VISION_SUBSCRIPTION_KEY, VISION_VERSION)
-        # print('1')
-        # print(str(image_embedding)[:4])
+        image_embedding = vectorize_image_with_filepath(image_filepath=file_path, endpoint=VISION_ENDPOINT, key=VISION_SUBSCRIPTION_KEY)
+        print('1')
+        # print(str(image_embedding))
+        # print(image_embedding)
         image_vector_query = VectorizedQuery(
             vector=image_embedding, k_nearest_neighbors=100, fields="product_description_vector")
         # print('2')
